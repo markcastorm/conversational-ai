@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useChatContext } from '../../context/ChatContext'; 
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Image, 
@@ -15,6 +17,8 @@ import {
 import ResponseInterface from './ResponseInterface';
 
 const MainChatInterface = () => {
+  const { addNewChat } = useChatContext();
+  const navigate = useNavigate(); 
   const [query, setQuery] = useState('');
   const [isActive, setIsActive] = useState(false);
   const [showResponse, setShowResponse] = useState(false);
@@ -31,6 +35,13 @@ const MainChatInterface = () => {
 
   const handleSubmit = () => {
     if (query.trim()) {
+      // Create new chat when user submits
+      const chatId = addNewChat({
+        title: query.length > 50 ? query.substring(0, 50) + '...' : query,
+        category: 'conversational',
+        priority: 'medium'
+      });
+      
       setSubmittedQuery(query);
       setShowResponse(true);
     }
