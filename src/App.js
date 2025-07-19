@@ -4,6 +4,7 @@ import { ChatProvider } from './context/ChatContext';
 import Sidebar from './components/layout/Sidebar';
 import MainChatInterface from './components/chat/MainChatInterface';
 import RecentConversationsPage from './components/chat/RecentConversationsPage';
+import IndividualChatView from './components/chat/IndividualChatView'; // Add this import
 import './App.css';
 
 // Simple page components for demonstration
@@ -148,8 +149,9 @@ const DynamicPage = () => {
 function AppContent() {
   const location = useLocation();
   
-  // Show sidebar on all pages for consistent navigation
-  const showSidebar = true;
+  // Hide sidebar for individual chat view to maximize chat space
+  const fullWidthPages = ['/chat'];
+  const showSidebar = !fullWidthPages.some(path => location.pathname.startsWith(path));
 
   return (
     <div className="App flex">
@@ -159,6 +161,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<NewThreadPage />} />
           <Route path="/new" element={<NewThreadPage />} />
+          <Route path="/chat/:chatId" element={<IndividualChatView />} /> {/* Add this route */}
           <Route path="/home" element={<HomePage />} />
           <Route path="/home/recent" element={<RecentConversationsPage />} />
           <Route path="/home/favorites" element={<FavoritesPage />} />

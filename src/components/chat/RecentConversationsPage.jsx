@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useChatContext } from '../../context/ChatContext';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Plus, 
@@ -25,6 +26,8 @@ const RecentConversationsPage = () => {
     addNewChat, 
     deleteChat 
   } = useChatContext();
+  
+  const navigate = useNavigate(); // Add navigation
 
   // Keep other local states for UI functionality
   const [searchQuery, setSearchQuery] = useState('');
@@ -120,6 +123,15 @@ const RecentConversationsPage = () => {
       }
     }, Math.random() * 1000 + 500);
   }, [conversations.length, generateDynamicConversations, setConversations]);
+
+  // Handle chat navigation
+  const handleChatClick = (chatId, e) => {
+    // Prevent navigation if clicking on checkbox or action buttons
+    if (e.target.closest('input[type="checkbox"]') || e.target.closest('button')) {
+      return;
+    }
+    navigate(`/chat/${chatId}`);
+  };
 
   // Realistic updates - much less frequent and more meaningful
   useEffect(() => {
@@ -441,11 +453,12 @@ const RecentConversationsPage = () => {
           {filteredConversations.map((conversation, index) => (
             <div
               key={conversation.id}
+              onClick={(e) => handleChatClick(conversation.id, e)} // Add click handler
               className={`
                 group relative border rounded-lg transition-all duration-300 cursor-pointer transform hover:scale-[1.01]
                 ${selectedChats.includes(conversation.id)
                   ? 'bg-blue-50 border-blue-200 shadow-md scale-[1.01]'
-                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md bg-white'
+                  : 'border-gray-200 hover:border-gray-300 hover:shadow-md bg-white hover:bg-gray-50'
                 }
                 ${conversation.isLive ? 'ring-2 ring-green-200 ring-opacity-50' : ''}
               `}
@@ -563,6 +576,7 @@ const RecentConversationsPage = () => {
                 <div className="w-6 h-6 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin"></div>
                 <span>Loading more conversations...</span>
                 <div className="flex space-x-1">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                   <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                   <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
                 </div>
@@ -613,6 +627,23 @@ const RecentConversationsPage = () => {
           <div ref={observerTarget} className="h-1" />
         </div>
       </div>
+
+      {/* Custom Styles */}
+      <style jsx>{`
+        @keyframes slide-in {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+        .animate-slide-in {
+          animation: slide-in 0.3s ease-out;
+        }
+      `}</style>
     </div>
   );
 };
