@@ -1,4 +1,4 @@
-// src/contexts/ChatContext.jsx
+
 import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const ChatContext = createContext();

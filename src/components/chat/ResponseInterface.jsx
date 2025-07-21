@@ -1,4 +1,4 @@
-// src/components/chat/ResponseInterface.jsx
+
 import React, { useState, useEffect } from 'react';
 import { 
   Search, 
